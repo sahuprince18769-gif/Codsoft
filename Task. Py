@@ -1,0 +1,45 @@
+def calculator():
+    print("=== Simple Calculator ===")
+    
+    # 1. Prompt the user for two numbers
+    try:
+        num1 = float(input("Enter the first number: "))
+        num2 = float(input("Enter the second number: "))
+    except ValueError:
+        print("Error: Invalid input. Please enter numerical values.")
+        return
+
+    # 2. Prompt the user for an operation choice
+    print("\nChoose an operation:")
+    print("+ : Addition")
+    print("- : Subtraction")
+    print("* : Multiplication")
+    print("/ : Division")
+    
+    operation = input("Enter your choice (+, -, *, /): ").strip()
+
+    # 3. Perform the calculation and display the result
+    print("\n-------------------------")
+    if operation == '+':
+        result = num1 + num2
+        print(f"Result: {num1} + {num2} = {result}")
+    elif operation == '-':
+        result = num1 - num2
+        print(f"Result: {num1} - {num2} = {result}")
+    elif operation == '*':
+        result = num1 * num2
+        print(f"Result: {num1} * {num2} = {result}")
+    elif operation == '/':
+        # Handle division by zero
+        if num2 == 0:
+            print("Error: Division by zero is not allowed.")
+        else:
+            result = num1 / num2
+            print(f"Result: {num1} / {num2} = {result}")
+    else:
+        print("Error: Invalid operation choice.")
+    print("-------------------------")
+
+# Run the calculator
+if __name__ == "__main__":
+    calculator()
