@@ -1,0 +1,90 @@
+import secrets
+import string
+
+class MobilePasswordGenerator:
+    """Generates secure passwords optimized for mobile device keyboards and screen inputs."""
+    
+    def __init__(self):
+        # Mobile-friendly characters (skipping symbols that require switching multiple keyboard layouts)
+        self.digits = string.digits
+        self.uppercase = string.ascii_uppercase
+        self.lowercase = string.ascii_lowercase
+        # Only use common mobile symbols found on the primary symbol layout (? ! @ # $)
+        self.mobile_symbols = "?!@#$"
+
+    def generate_numeric_pin(self, length: int = 6) -> str:
+        """Generates a secure numeric PIN (e.g., for lock screens or banking apps)."""
+        if length < 4:
+            raise ValueError("PIN length must be at least 4 digits.")
+        return "".join(secrets.choice(self.digits) for _ in range(length))
+
+    def generate_mobile_password(self, length: int = 8, include_symbols: bool = True) -> str:
+        """Generates an alphanumeric password optimized for easy thumb-typing."""
+        if length < 6:
+            raise ValueError("Mobile password length should be at least 6 characters for safety.")
+
+        # Establish base pools ensuring easy mobile entry
+        pool = self.lowercase + self.uppercase + self.digits
+        guaranteed = [
+            secrets.choice(self.lowercase),
+            secrets.choice(self.uppercase),
+            secrets.choice(self.digits)
+        ]
+
+        if include_symbols:
+            pool += self.mobile_symbols
+            guaranteed.append(secrets.choice(self.mobile_symbols))
+
+        # Fill out the rest of the required length
+        remaining = length - len(guaranteed)
+        password_list = guaranteed + [secrets.choice(pool) for _ in range(remaining)]
+        
+        # Securely shuffle the password
+        secrets.SystemRandom().shuffle(password_list)
+        return "".join(password_list)
+
+
+def main():
+    print("=========================================")
+    print("      MOBILE PASSWORD GENERATOR          ")
+    print("=========================================\n")
+    
+    gen = MobilePasswordGenerator()
+
+    print("Select Mobile Security Type:")
+    print("1 : Numeric PIN (e.g., 4 or 6-digit lock screen)")
+    print("2 : Alphanumeric Password (Thumb-typing friendly)")
+    
+    choice = input("Enter choice (1 or 2): ").strip()
+
+    if choice == '1':
+        while True:
+            try:
+                length = int(input("Enter PIN length (4 or 6 recommended): "))
+                pin = gen.generate_numeric_pin(length)
+                print("\n" + "="*30)
+                print(f"Your Secure Mobile PIN:\n👉 {pin}")
+                print("="*30)
+                break
+            except ValueError as e:
+                print(f"Error: {e}. Please try again.")
+
+    elif choice == '2':
+        while True:
+            try:
+                length = int(input("Enter password length (8-12 recommended): "))
+                sym_choice = input("Include mobile-friendly symbols (?!@#$)? (y/n): ").strip().lower() == 'y'
+                
+                password = gen.generate_mobile_password(length, include_symbols=sym_choice)
+                print("\n" + "="*30)
+                print(f"Your Mobile Password:\n👉 {password}")
+                print("="*30)
+                break
+            except ValueError as e:
+                print(f"Error: {e}. Please try again.")
+    else:
+        print("Invalid option selected. Exiting program.")
+
+
+if __name__ == "__main__":
+    main()
